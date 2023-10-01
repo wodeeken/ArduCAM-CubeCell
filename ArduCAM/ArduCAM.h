@@ -36,6 +36,7 @@
   		-	Raspberry Pi			(Tested)
   		- ESP8266-12				(Tested)  		
 		* Feather M0                (Tested with OV5642)
+		* CubeCell HTCC-AB01		(Tested with OV2640)
 
   If you make any modifications or improvements to the code, I would appreciate
   that you share the code with me so that I might include it in the next release.
@@ -96,6 +97,7 @@
 	2017/11/27  V4.1.2  by Max      Add support for Feather M0
 	2018/10/15  V4.1.2  by Lee      Add support for NRF52
 	2018/10/15  V4.1.2  by Lee      Add support for TEENSYDUINO
+	2023/10/01		by WOD	Add support for CubeCell HTCC-AB01
 --------------------------------------*/
 
 #ifndef ArduCAM_H
@@ -107,7 +109,18 @@
 	#include <pins_arduino.h>
 	#include "memorysaver.h"
 #endif
-
+#if defined (CubeCell_Board)
+	#define cbi(reg, bitmask) digitalWrite(bitmask, LOW)
+	#define sbi(reg, bitmask) digitalWrite(bitmask, HIGH)
+	#define pulse_high(reg, bitmask) sbi(reg, bitmask); cbi(reg, bitmask);
+	#define pulse_low(reg, bitmask) cbi(reg, bitmask); sbi(reg, bitmask);
+	#define cport(port, data) port &= data
+	#define sport(port, data) port |= data
+	#define swap(type, i, j) {type t = i; i = j; j = t;}
+	#define fontbyte(x) pgm_read_byte(&cfont.font[x])  
+	#define regtype volatile uint8_t
+	#define regsize uint8_t
+#endif
 #if defined (__AVR__)
 #define cbi(reg, bitmask) *reg &= ~bitmask
 #define sbi(reg, bitmask) *reg |= bitmask

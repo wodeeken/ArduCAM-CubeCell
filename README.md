@@ -30,6 +30,7 @@ In addition to Arduino, the library can be ported to any hardware platforms as l
 -	Raspberry Pi			(Tested)
 -	ESP8266-12			(Tested) (http://www.arducam.com/downloads/ESP8266_UNO/package_ArduCAM_index.json)
 *	Feather M0              (Tested with OV5642)
+*	CubeCell HTCC-AB01  	(Tested with OV2640)
 
 Note: ArduCAM library for ESP8266 is maintained in another repository [ESP8266](https://github.com/ArduCAM/ArduCAM_ESP8266_UNO) using a json board manager script. <br>
 

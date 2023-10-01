@@ -34,6 +34,7 @@
       - Arduino Yun       (Tested)
       - Raspberry Pi      (Tested)
       - ESP8266-12        (Tested)
+      - CubeCell HTCC-AB01 	(Tested with OV2640)
 
   If you make any modifications or improvements to the code, I would appreciate
   that you share the code with me so that I might include it in the next release.
@@ -92,6 +93,7 @@
   2017/04/27  V4.1.0  by Lee	Add support for OV2640/OV5640/OV5642 functions.
   2017/07/07  V4.1.0  by Lee	Add support for ArduCAM_ESP32 paltform
   2017/07/25  V4.1.1  by Lee	Add support for MT9V034
+  2023/10/01		by WOD	Add support for CubeCell HTCC-AB01	
   --------------------------------------*/
 #include "memorysaver.h"
 #if defined ( RASPBERRY_PI )
@@ -129,7 +131,10 @@ ArduCAM::ArduCAM(byte model ,int CS)
 		{
 			B_CS = CS;
 		}
-	#else
+	#endif
+	#if defined(CubeCell_Board)
+			B_CS = CS;
+		#else
 		#if (defined(ESP8266)||defined(ESP32)||defined(TEENSYDUINO) ||defined(NRF52840_XXAA))
 		  B_CS = CS;
 		#else
@@ -139,7 +144,8 @@ ArduCAM::ArduCAM(byte model ,int CS)
 	#endif
  #if defined (RASPBERRY_PI)
   // pinMode(CS, OUTPUT);
- #else
+ 
+ 	#else
 	  pinMode(CS, OUTPUT);
       sbi(P_CS, B_CS);
 	#endif
@@ -734,7 +740,7 @@ uint8_t ArduCAM::read_fifo(void)
 uint8_t ArduCAM::read_reg(uint8_t addr)
 {
 	uint8_t data;
-	#if defined (RASPBERRY_PI)
+	#if defined (RASPBERRY_PI) || defined(CubeCell_Board)
 		data = bus_read(addr);	
 	#else
 		data = bus_read(addr & 0x7F);
@@ -744,7 +750,7 @@ uint8_t ArduCAM::read_reg(uint8_t addr)
 
 void ArduCAM::write_reg(uint8_t addr, uint8_t data)
 {
-	#if defined (RASPBERRY_PI)
+	#if defined (RASPBERRY_PI) //|| defined(CubeCell_Board)
 		bus_write(addr , data);
 	#else
 	 bus_write(addr | 0x80, data);
